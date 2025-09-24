@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { createTypeSuccess } from "../../store/deviceSlice";
@@ -39,23 +39,23 @@ const CreateType = ({
     return (
       <Modal show={show} onHide={onHide} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Додати новий тип</Modal.Title>
+          <Modal.Title>Add new type</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Control
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder={"Введіть назву типу"}
+              placeholder={"Enter name of type"}
             />
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-danger" onClick={onHide}>
-            Закрити
+            Close
           </Button>
           <Button variant="outline-success" onClick={addType}>
-            Додати
+            Add
           </Button>
         </Modal.Footer>
       </Modal>

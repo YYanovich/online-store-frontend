@@ -52,6 +52,9 @@ const deviceSlice = createSlice({
             state.loading = false,
             state.error = action.payload
         },
+        createDeviceSuccess(state, action: PayloadAction<Device>) {
+            state.devices.push(action.payload)
+        },
         fetchTypesStart(state) {
             state.loading = true
             state.error = null
@@ -85,5 +88,5 @@ const deviceSlice = createSlice({
         
     }
 })
-export const {fetchDeviceStart, fetchDeviceSuccess, fetchDeviceError, fetchTypesStart, fetchTypesSuccess, fetchTypesError, createTypeSuccess, fetchBrandStart, fetchBrandSuccess, fetchBrandError, createBrandSuccess  } = deviceSlice.actions
+export const {fetchDeviceStart, fetchDeviceSuccess, fetchDeviceError, createDeviceSuccess, fetchTypesStart, fetchTypesSuccess, fetchTypesError, createTypeSuccess, fetchBrandStart, fetchBrandSuccess, fetchBrandError, createBrandSuccess } = deviceSlice.actions
 export default deviceSlice.reducer
