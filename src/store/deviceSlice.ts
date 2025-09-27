@@ -1,5 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  isRejectedWithValue,
+} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+
 interface Device {
   id: number;
   name: string;
@@ -9,84 +14,154 @@ interface Device {
   typeId: number;
   brandId: number;
 }
-
 interface Brand {
-    id: number,
-    name: string
+  id: number;
+  name: string;
 }
-
 interface Type {
-    id: number,
-    name: string
+  id: number;
+  name: string;
 }
-
 interface DeviceState {
-    devices: Device[],
-    brands: Brand[],
-    types: Type[],
-    loading: boolean
-    error: string | null
+  devices: Device[];
+  brands: Brand[];
+  types: Type[];
+  loading: boolean;
+  error: string | null;
 }
 
-const initialState: DeviceState = { 
-    devices: [],
-    brands: [],
-    types: [],
-    loading: false,
-    error: null,
-}
+const initialState: DeviceState = {
+  devices: [],
+  brands: [],
+  types: [],
+  loading: false,
+  error: null,
+};
+
+export const fetchInitialData = createAsyncThunk(
+  "device/fetchInitialData",
+  async (_, thunkAPI) => {
+    try {
+      const [devicesRes, typesRes, brandsRes] = await Promise.all([
+        fetch("http://localhost:5002/api/device"),
+        fetch("http://localhost:5002/api/type"),
+        fetch("http://localhost:5002/api/brand"),
+      ]);
+
+      if (!devicesRes.ok || !typesRes.ok || !brandsRes.ok) {
+        throw new Error("Failed to fetch initial data");
+      }
+
+      const devicesData = await devicesRes.json();
+      const typesData = await typesRes.json();
+      const brandsData = await brandsRes.json();
+
+      return {
+        devices: devicesData.rows,
+        types: typesData,
+        brands: brandsData,
+      };
+    } catch (e: any) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+export const createBrand = createAsyncThunk(
+  "device/createBrand",
+  async ({ name }: { name: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:5002/api/brand", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const data = await response.json();
+      if (!response.ok)
+        return rejectWithValue(data.message || "Error creating brand");
+      return data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const createType = createAsyncThunk(
+  "device/createType",
+  async ({ name }: { name: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:5002/api/type", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return rejectWithValue(data.message || "Error creating type");
+      }
+      return data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const createDevice = createAsyncThunk(
+  "device/createDevice",
+  async (deviceData: FormData, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:5002/api/device", {
+        method: "POST",
+        body: deviceData,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return rejectWithValue(data.message || "Error creating device");
+      }
+      return data;
+    } catch (e: any) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
 
 const deviceSlice = createSlice({
-    name: 'device',
-    initialState,
-    reducers: {
-        fetchDeviceStart(state) {
-            state.loading = true
-            state.error = null
-        },
-        fetchDeviceSuccess(state, action: PayloadAction<Device[]>) {
-            state.loading = false
-            state.devices = action.payload
-        },
-        fetchDeviceError(state, action: PayloadAction<string>) {
-            state.loading = false,
-            state.error = action.payload
-        },
-        createDeviceSuccess(state, action: PayloadAction<Device>) {
-            state.devices.push(action.payload)
-        },
-        fetchTypesStart(state) {
-            state.loading = true
-            state.error = null
-        },
-        fetchTypesSuccess(state, action: PayloadAction<Type[]>) {
-            state.loading = false,
-            state.types = action.payload
-        },
-        fetchTypesError(state, action: PayloadAction<string>) {
-            state.loading = false,
-            state.error = action.payload
-        },
-        createTypeSuccess(state, action: PayloadAction<Type>) {
-            state.types.push(action.payload);
-        },
-        fetchBrandStart(state) {
-            state.loading = true
-            state.error = null
-        },
-        fetchBrandSuccess(state, action: PayloadAction<Brand[]>) {
-            state.loading = false
-            state.brands = action.payload
-        },
-        fetchBrandError(state, action: PayloadAction<string>) {
-            state.loading = false;
-            state.error = action.payload
-        },
-        createBrandSuccess(state, action: PayloadAction<Brand>) {
-            state.brands.push(action.payload)
+  name: "device",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchInitialData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchInitialData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.devices = action.payload.devices;
+        state.types = action.payload.types;
+        state.brands = action.payload.brands;
+      })
+      .addCase(fetchInitialData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(createBrand.fulfilled, (state, action: PayloadAction<Brand>) => {
+        state.brands.push(action.payload);
+      })
+      .addCase(createType.fulfilled, (state, action: PayloadAction<Type>) => {
+        state.types.push(action.payload);
+      })
+      .addCase(
+        createDevice.fulfilled,
+        (state, action: PayloadAction<Device>) => {
+          state.devices.push(action.payload);
         }
-        
-    }
-})
-export const {fetchDeviceStart, fetchDeviceSuccess, fetchDeviceError, createDeviceSuccess, fetchTypesStart, fetchTypesSuccess, fetchTypesError, createTypeSuccess, fetchBrandStart, fetchBrandSuccess, fetchBrandError, createBrandSuccess } = deviceSlice.actions
-export default deviceSlice.reducer
+      )
+      .addMatcher(isRejectedWithValue, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export default deviceSlice.reducer;

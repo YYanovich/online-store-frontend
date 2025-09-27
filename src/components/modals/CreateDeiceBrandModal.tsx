@@ -1,32 +1,21 @@
 import { useState } from "react";
 import { Modal, Button, Form, ModalBody } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { createBrandSuccess } from "../../store/deviceSlice";
+import { createBrand } from "../../store/deviceSlice";
 import type { AppDispatch } from "../../store";
+import type { ModalProps } from "../../types/props";
 
-const CreateBrand = ({show, onHide}: {show: boolean; onHide: () => void;}) => {
+const CreateDeviceBrandModal = ({ show, onHide }: ModalProps) => {
   const [value, setValue] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
-  const addBrand = async () => {
-    try {
-      const response = await fetch("http://localhost:5002/api/brand", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: value }),
-      });
-      const newBrand = await response.json();
-
-      if (!response.ok) {
-        throw new Error(newBrand.message || "Error with creating brand");
-      }
-
-      dispatch(createBrandSuccess(newBrand));
-      setValue("");
-      onHide();
-    } catch (e: any) {
-      alert(e.message);
+  const addDeviceBrand = () => {
+    if (!value.trim()) {
+      return alert("Brand cannpt be empty");
     }
+    dispatch(createBrand({ name: value }));
+    setValue("");
+    onHide();
   };
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -46,12 +35,11 @@ const CreateBrand = ({show, onHide}: {show: boolean; onHide: () => void;}) => {
         <Button variant="outline-danger" onClick={onHide}>
           Close
         </Button>
-        <Button variant="outline-success" onClick={addBrand}>
+        <Button variant="outline-success" onClick={addDeviceBrand}>
           Add
         </Button>
       </Modal.Footer>
     </Modal>
   );
 };
-
-export default CreateBrand
+export default CreateDeviceBrandModal;
