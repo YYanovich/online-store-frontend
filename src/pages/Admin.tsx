@@ -4,7 +4,7 @@ import { Button, Container, ListGroup, Spinner } from "react-bootstrap";
 import CreateType from "../components/modals/CreateDeviceTypeModal";
 import type { RootState, AppDispatch } from "../store";
 import { fetchInitialData } from "../store/deviceSlice";
-import CreateBrand from "../components/modals/CreateDeiceBrandModal";
+import CreateBrand from "../components/modals/CreateDeviceBrandModal";
 import CreateDevice from "../components/modals/CreateDeviceModal";
 
 type ModalType = "type" | "brand" | "device";

@@ -8,11 +8,13 @@ import {
   REGISTRATION_ROUTE,
   ADMIN_ROUTE,
   DEVICE_ROUTE,
+  BASKET_ROUTE,
 } from "../utils/consts";
 import { logout } from "../store/userSlice";
 
 const NavBar = () => {
   const isAuth = useSelector((state: RootState) => state.user.isAuth);
+  const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -39,8 +41,7 @@ const NavBar = () => {
             See all
           </Nav.Link>
         </Nav>
-
-        {isAuth ? (
+        {user?.role === "ADMIN" ? (
           <div className="d-flex gap-2">
             <Link
               to={ADMIN_ROUTE}
@@ -48,6 +49,26 @@ const NavBar = () => {
               style={{ border: "none" }}
             >
               Admin Panel
+            </Link>
+            <button className="btn btn-primary" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        ) : user?.role === "USER" ? (
+          <div className="d-flex gap-2">
+            <Link
+              to={BASKET_ROUTE}
+              className="btn btn-success"
+              style={{ border: "none" }}
+            >
+              Cart
+            </Link>
+            <Link
+              to={SHOP_ROUTE}
+              className="btn btn-success"
+              style={{ border: "none" }}
+            >
+              Profile
             </Link>
             <button className="btn btn-primary" onClick={handleLogout}>
               Logout

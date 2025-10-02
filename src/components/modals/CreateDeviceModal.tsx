@@ -8,16 +8,16 @@ import type { ModalProps } from "../../types/props";
 const initialFormState = {
   name: "",
   price: 0,
-  rating: 0,
   file: null as File | null,
   brandId: null as number | null,
   typeId: null as number | null,
+  info: "",
+  rating: 0,
 };
 
 const CreateDeviceModal = ({ show, onHide }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { types, brands } = useSelector((state: RootState) => state.device);
-
   const [form, setForm] = useState(initialFormState);
 
   useEffect(() => {
@@ -26,28 +26,30 @@ const CreateDeviceModal = ({ show, onHide }: ModalProps) => {
     }
   }, [show]);
 
-  const textAndNumHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: name === "price" || name === "rating" ? Number(value) : value,
-    }));
-  };
-
-  const fileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setForm((prev) => ({ ...prev, file: e.target.files![0] }));
-    }
+  const handleFormChange = (key: keyof typeof initialFormState, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const addDevice = () => {
+    if (
+      !form.name ||
+      !form.price ||
+      !form.brandId ||
+      !form.typeId ||
+      !form.file
+    ) {
+      return alert("Please fill all required fields and choose an image.");
+    }
+
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("price", `${form.price}`);
-    formData.append("rating", `${form.rating}`);
-    if (form.file) formData.append("img", form.file);
-    if (form.brandId) formData.append("brandId", `${form.brandId}`);
-    if (form.typeId) formData.append("typeId", `${form.typeId}`);
+    formData.append("brandId", `${form.brandId}`);
+    formData.append("typeId", `${form.typeId}`);
+    formData.append("img", form.file);
+    if (form.rating) formData.append("rating", `${form.rating}`);
+    if (form.info) formData.append("info", form.info);
+
     dispatch(createDevice(formData));
     onHide();
   };
@@ -61,16 +63,29 @@ const CreateDeviceModal = ({ show, onHide }: ModalProps) => {
         <Form>
           <Dropdown className="mt-2">
             <Dropdown.Toggle>
-              {types.find((type) => type.id === form.typeId)?.name ||
-                "Choose type"}
+              {brands.find((b) => b.id === form.brandId)?.name ||
+                "Choose brand"}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {brands.map((brand) => (
+                <Dropdown.Item
+                  key={brand.id}
+                  onClick={() => handleFormChange("brandId", brand.id)}
+                >
+                  {brand.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown className="mt-2">
+            <Dropdown.Toggle>
+              {types.find((t) => t.id === form.typeId)?.name || "Choose type"}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {types.map((type) => (
                 <Dropdown.Item
                   key={type.id}
-                  onClick={() =>
-                    setForm((prev) => ({ ...prev, typeId: type.id }))
-                  }
+                  onClick={() => handleFormChange("typeId", type.id)}
                 >
                   {type.name}
                 </Dropdown.Item>
@@ -78,48 +93,45 @@ const CreateDeviceModal = ({ show, onHide }: ModalProps) => {
             </Dropdown.Menu>
           </Dropdown>
 
-          <Dropdown className="mt-2">
-            <Dropdown.Toggle>
-              {brands.find((brand) => brand.id === form.brandId)?.name ||
-                "Choose brand"}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {brands.map((brand) => (
-                <Dropdown.Item
-                  key={brand.id}
-                  onClick={() =>
-                    setForm((prev) => ({ ...prev, brandId: brand.id }))
-                  }
-                >
-                  {brand.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
+          {/* Поля вводу */}
           <Form.Control
             className="mt-3"
             value={form.name}
-            onChange={textAndNumHandler}
-            name="name"
+            onChange={(e) => handleFormChange("name", e.target.value)}
             placeholder="Enter device name"
           />
           <Form.Control
             className="mt-3"
             value={form.price || ""}
-            onChange={textAndNumHandler}
+            onChange={(e) => handleFormChange("price", Number(e.target.value))}
             placeholder="Enter device price"
-            name="price"
             type="number"
           />
           <Form.Control
             className="mt-3"
             value={form.rating || ""}
-            onChange={textAndNumHandler}
-            name="rating"
+            onChange={(e) => handleFormChange("rating", Number(e.target.value))}
             placeholder="Enter device rating"
             type="number"
           />
-          <Form.Control className="mt-3" type="file" onChange={fileHandler} />
+          <Form.Control
+            className="mt-3"
+            value={form.info || ""}
+            onChange={(e) => handleFormChange("info", e.target.value)}
+            placeholder="Enter device info"
+            as="textarea"
+            rows={3}
+          />
+          <Form.Control
+            className="mt-3"
+            type="file"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleFormChange(
+                "file",
+                e.target.files ? e.target.files[0] : null
+              )
+            }
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer>

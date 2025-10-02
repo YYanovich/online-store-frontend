@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Card, Form, Button, Container } from "react-bootstrap";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/consts"; 
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/consts";
 import type { AppDispatch } from "../store";
 import { loginStart, loginSuccess, loginError } from "../store/userSlice";
 
@@ -45,7 +45,7 @@ const Auth = () => {
         }
       }
 
-      dispatch(loginSuccess(userData));
+      dispatch(loginSuccess(userData.user));
       if (userData.token) {
         localStorage.setItem("token", userData.token);
       }

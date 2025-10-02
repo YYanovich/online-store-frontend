@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface Device {
+export interface Device {
   id: number;
   name: string;
   price: number;
@@ -14,11 +14,11 @@ interface Device {
   typeId: number;
   brandId: number;
 }
-interface Brand {
+export interface Brand {
   id: number;
   name: string;
 }
-interface Type {
+export interface Type {
   id: number;
   name: string;
 }
