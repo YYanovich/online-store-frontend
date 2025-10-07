@@ -1,7 +1,7 @@
-import Admin from "./pages/Admin";
-import Basket from "./pages/Basket";
-import Shop from "./pages/Shop";
-import Auth from "./pages/Auth";
+import Admin from "./pages/AdminPage";
+import Basket from "./pages/BasketPage/BasketPage";
+import Shop from "./pages/ShopPage";
+import Auth from "./pages/AuthPage";
 import DevicePage from "./pages/DevicePage";
 import {
   ADMIN_ROUTE,

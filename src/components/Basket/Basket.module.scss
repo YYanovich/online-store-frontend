@@ -1,0 +1,31 @@
+.cartWrapper {
+  display: inline-block;
+  cursor: pointer;
+  position: relative; 
+  top: 5px;        
+  left: -10px;      
+  img {
+    width: 30px;
+    height: auto;
+  }
+
+  .cartBadge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 12px;
+    font-weight: bold;
+  }
+}

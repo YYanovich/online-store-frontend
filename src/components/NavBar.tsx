@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "../store";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import Basket from "./Basket/Basket";
+import Switch from "./SwitchComponent/Switch";
 import {
   SHOP_ROUTE,
   LOGIN_ROUTE,
@@ -13,7 +15,6 @@ import {
 import { logout } from "../store/userSlice";
 
 const NavBar = () => {
-  const isAuth = useSelector((state: RootState) => state.user.isAuth);
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -24,10 +25,7 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar
-      bg={isAuth ? "dark" : "light"}
-      data-bs-theme={isAuth ? "dark" : "light"}
-    >
+    <Navbar>
       <Container>
         <Navbar.Brand as={Link} to={SHOP_ROUTE} style={{ color: "red" }}>
           FutureLogo
@@ -56,12 +54,8 @@ const NavBar = () => {
           </div>
         ) : user?.role === "USER" ? (
           <div className="d-flex gap-2">
-            <Link
-              to={BASKET_ROUTE}
-              className="btn btn-success"
-              style={{ border: "none" }}
-            >
-              Cart
+            <Link to={BASKET_ROUTE} style={{ border: "none" }}>
+              <Basket />
             </Link>
             <Link
               to={SHOP_ROUTE}
@@ -88,6 +82,7 @@ const NavBar = () => {
             </Link>
           </div>
         )}
+        <Switch className="ms-3" />
       </Container>
     </Navbar>
   );
