@@ -1,3 +1,4 @@
+import "./Switch.scss";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function Switch({ className }: { className?: string }) {
@@ -7,7 +8,9 @@ export default function Switch({ className }: { className?: string }) {
 
   return (
     <div
-      className={`form-check form-switch d-flex align-items-center ${className}`}
+      className={`form-check form-switch d-flex align-items-center theme-switch ${
+        className || ""
+      }`}
     >
       <input
         className="form-check-input"

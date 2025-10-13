@@ -1,0 +1,39 @@
+.my-navbar {
+  .navbar-brand {
+    height: 40px;
+    margin-bottom: 5rem;
+    margin-right: 5rem;
+    width: 20px;
+  }
+  .navbar-toggler {
+    border: none;
+  }
+  .navbar-collapse {
+    background: var(--background-primary);
+  }
+  .me-auto {
+
+  }
+}
+@media (max-width: 425px) {
+    .me-auto {
+        display: none;
+    }
+    .navbar-brand {
+        padding-right: 2rem;
+    }
+    .my-navbar{
+        right: 2rem;
+        padding-top: -4rem;
+    }
+    
+}
+@media (max-width: 320px) {
+    .navbar-toggler {
+        margin-left: 1rem;
+    }
+    .my-navbar{
+        right: 3rem;
+        padding-top: -4rem;
+    }
+}

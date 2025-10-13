@@ -1,9 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState, AppDispatch } from "../store";
+import "./NavBar.scss";
+import type { RootState, AppDispatch } from "../../store";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import Basket from "./Basket/Basket";
-import Switch from "./SwitchComponent/Switch";
+import Basket from "../Basket/Basket";
+import Switch from "../SwitchComponent/Switch";
+import Logo from "../../assets/logo_bg_removed.png";
 import {
   SHOP_ROUTE,
   LOGIN_ROUTE,
@@ -11,8 +13,8 @@ import {
   ADMIN_ROUTE,
   DEVICE_ROUTE,
   BASKET_ROUTE,
-} from "../utils/consts";
-import { logout } from "../store/userSlice";
+} from "../../utils/consts";
+import { logout } from "../../store/userSlice";
 
 const NavBar = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -25,10 +27,10 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar>
+    <Navbar className="my-navbar navbar-light navbar-expand-sm">
       <Container>
         <Navbar.Brand as={Link} to={SHOP_ROUTE} style={{ color: "red" }}>
-          FutureLogo
+          <img src={Logo} style={{ width: 130, height: 130 }} />
         </Navbar.Brand>
 
         <Nav className="me-auto">
@@ -82,7 +84,7 @@ const NavBar = () => {
             </Link>
           </div>
         )}
-        <Switch className="ms-3" />
+        <Switch className="ms-1" />
       </Container>
     </Navbar>
   );

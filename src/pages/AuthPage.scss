@@ -1,0 +1,16 @@
+.auth-container {
+  min-height: calc(100vh - 54px);
+}
+
+/* Move the form higher on small screens */
+@media (max-width: 425px) {
+  .auth-container {
+    align-items: flex-start !important; /* push to top */
+    padding-top: 24px;
+  }
+  .auth-card {
+    width: 100% !important;
+    max-width: 520px;
+    margin: 0 12px; /* safe gutters */
+  }
+}

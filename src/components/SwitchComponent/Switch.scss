@@ -1,0 +1,21 @@
+/* Default: label to the right (Bootstrap behavior) */
+
+/* Phones <=375px: place label under the toggle neatly */
+@media (max-width: 375px) {
+  .theme-switch {
+    flex-direction: column; /* stack vertically */
+    align-items: center; /* center horizontally */
+    gap: 4px; /* small space between switch and text */
+  }
+  .theme-switch.form-check {
+    padding-left: 0; /* remove bootstrap left padding */
+  }
+  .theme-switch .form-check-input {
+    margin-left: 0; /* align switch to center of container */
+  }
+  .theme-switch .form-check-label {
+    margin-left: 0 !important; /* override Bootstrap ms-2 if any */
+    text-align: center;
+    line-height: 1.1;
+  }
+}

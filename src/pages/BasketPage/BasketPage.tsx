@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import styles from "./Basket.module.scss";
 import Star from "../../assets/star.png";
 import {
-  Container,
   Row,
   Col,
   ListGroup,
@@ -19,17 +18,16 @@ const Basket = () => {
   useEffect(() => {
     getItems();
   }, []);
-
   if (loading) {
     return <Spinner animation="grow" />;
   }
-  if (items.length === 0) {
-    return <Alert variant="info">Your cart is empty</Alert>;
-  }
+    if (items.length === 0) {
+      return <Alert variant="info">Your cart is empty</Alert>;
+    }
   return (
-    <Container>
+    <div className={styles.pageWrapper}>
       <hr />
-      <Row className="mb-3">
+      <Row className="mb-3 d-none d-md-flex">
         <Col md={2}>
           <strong></strong>
         </Col>
@@ -47,17 +45,12 @@ const Basket = () => {
       <ListGroup>
         {items.map((item) => (
           <ListGroupItem key={item.id} className={styles.basketItem}>
-            <Row className="align-items-center">
-              <Col md={2}>
-                <Image src={`/${item.img}`} className={styles.itemImage} />
-              </Col>
-              <Col md={4} className="text-center">
+            <div className={styles.itemContent}>
+              <Image src={`/${item.img}`} className={styles.itemImage} />
+
+              <div className={styles.itemDetails}>
                 <h4 className={styles.productName}>{item.name}</h4>
-              </Col>
-              <Col md={2} className="text-center">
-                <h5>{item.price} hrn</h5>
-              </Col>
-              <Col md={1} className="d-flex justify-content-center">
+                <h5 className={styles.price}>{item.price} hrn</h5>
                 <div className={styles.rating}>
                   <span className={styles.ratingValue}>{item.rating}</span>
                   <Image
@@ -66,13 +59,17 @@ const Basket = () => {
                     alt={`${item.rating} star rating`}
                   />
                 </div>
-              </Col>
-              <Col md={3} className="d-flex justify-content-end">
-                <Button variant="danger" onClick={() => deleteItem(item.id)}>
-                  Delete product
-                </Button>
-              </Col>
-            </Row>
+              </div>
+
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => {deleteItem}} 
+                className={styles.deleteButton}
+              >
+                &times;
+              </Button>
+            </div>
           </ListGroupItem>
         ))}
       </ListGroup>
@@ -82,7 +79,7 @@ const Basket = () => {
           <div className={styles.summaryInfo}>
             <span className={styles.summaryLabel}>Total to pay</span>
             <span className={styles.summaryAmount}>
-              {totalPrice.toLocaleString()} hrn.
+              {totalPrice.toLocaleString()} hrn
             </span>
           </div>
           <Button className={styles.summaryButton} variant="success">
@@ -90,7 +87,7 @@ const Basket = () => {
           </Button>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 };
 export default Basket;
